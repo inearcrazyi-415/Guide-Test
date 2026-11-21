@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王牌領隊危機公關模擬器 - 全40題完整版</title>
+<style>
+  :root { --bg:#0f172a; --panel:#1e293b; --card:#334155; --text:#f8fafc; --muted:#94a3b8; --accent:#38bdf8; --safe:#22c55e; --warn:#f59e0b; --danger:#ef4444; --gold:#facc15 }
+  * { box-sizing:border-box; font-family:"PingFang TC","Microsoft JhengHei",sans-serif }
+  body { background:var(--bg); color:var(--text); margin:0; padding:16px; display:flex; justify-content:center }
+  .container { max-width:1080px; width:100% }
+  header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:12px; margin-bottom:14px; flex-wrap:wrap; gap:10px }
+  .title-wrap { display:flex; align-items:center; gap:10px }
+  h1 { font-size:1.25rem; margin:0; color:var(--accent) }
+  .badge-count,.author-badge { font-size:.78rem; padding:3px 10px; border-radius:999px; font-weight:bold }
+  .badge-count { background:#0284c7; color:white }
+  .author-badge { background:linear-gradient(135deg,#f59e0b,#d97706); color:#0f172a }
+  .controls-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+  select { background:var(--panel); color:var(--text); border:1px solid var(--accent); padding:7px 10px; border-radius:8px; font-size:.88rem; font-weight:bold; cursor:pointer }
+  #eventSelect { max-width:340px }
+  .hint-toggle-label { display:inline-flex; align-items:center; gap:6px; background:var(--panel); border:1px solid #475569; padding:6px 10px; border-radius:8px; font-size:.85rem; font-weight:bold; color:#cbd5e1; cursor:pointer }
+  .hint-toggle-label input { accent-color:var(--accent); margin:0 }
+  .meters { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px }
+  .meter-box { background:var(--panel); padding:12px; border-radius:10px; border:1px solid #334155 }
+  .meter-title { font-size:.85rem; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px }
+  .meter-val { font-weight:bold; color:var(--text) }
+  .bar-bg { background:#0f172a; height:10px; border-radius:5px; overflow:hidden }
+  .bar-fill { height:100%; transition:.4s }
+  .flags-bar { background:var(--panel); padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:.85rem; display:flex; flex-wrap:wrap; gap:8px; align-items:center }
+  .flag-tag { background:#3b82f633; border:1px solid #3b82f6; color:#93c5fd; padding:2px 8px; border-radius:4px }
+  .flag-bonus { background:#facc1522; border:1px solid #eab308; color:#fde047 }
+  .scenario-panel { background:var(--panel); border-radius:12px; padding:18px; margin-bottom:14px; border-left:4px solid var(--accent) }
+  .scenario-title { font-size:1.15rem; font-weight:bold; margin-bottom:8px; color:#e0f2fe }
+  .scenario-desc { line-height:1.6; color:#cbd5e1; margin-bottom:12px }
+  .phase-box { background:#0f172a; border:1px solid #334155; padding:10px 14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px }
+  .phase-text { font-size:.92rem; color:#fde047; font-weight:bold }
+  .progress-status { font-size:.85rem; color:#38bdf8; font-weight:bold }
+  .ending-panel { background:#0f172a; border:2px solid var(--accent); border-radius:12px; padding:20px; margin-bottom:16px; animation:fadeIn .35s }
+  .ending-panel.ss { border-color:var(--gold); background:linear-gradient(135deg,#42200666,#0f172a); box-shadow:0 0 22px #facc1533 }
+  .ending-panel.good { border-color:var(--safe); background:#052e1644 }
+  .ending-panel.warn { border-color:var(--warn); background:#451a0344 }
+  .ending-panel.bad { border-color:var(--danger); background:#450a0a44 }
+  .ending-title { font-size:1.25rem; font-weight:bold; margin-bottom:8px }
+  .ending-summary { font-size:.95rem; line-height:1.6; color:#e2e8f0; margin-bottom:14px }
+  .audit-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; background:#0b1120; padding:14px; border-radius:8px; border:1px solid #1e293b }
+  .audit-col h4 { margin:0 0 8px }
+  .audit-list { margin:0; padding-left:18px; font-size:.85rem; line-height:1.6; color:#cbd5e1 }
+  .audit-ok { color:#4ade80 }.audit-miss { color:#f87171 }.audit-bonus { color:#facc15 }
+  .log-box { background:#0b1120; border:1px solid #1e293b; border-radius:8px; padding:12px; max-height:220px; overflow-y:auto; margin-bottom:14px; font-size:.9rem }
+  .log-entry { margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed #1e293b; line-height:1.5 }
+  .npc-reply { color:#fde047; display:block; margin-top:4px }
+  .penalty-msg { color:#f87171; font-weight:bold; display:block; margin-top:4px }
+  .tabs { display:flex; gap:8px; margin-bottom:12px }
+  .tab-btn { flex:1; padding:12px; background:var(--panel); border:1px solid #334155; color:var(--muted); border-radius:8px; cursor:pointer; font-weight:bold }
+  .tab-btn.active { background:#0284c7; color:white; border-color:#38bdf8 }
+  .cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:10px }
+  .card { background:var(--card); border:1px solid #475569; border-radius:10px; padding:14px; cursor:pointer; transition:.15s; display:flex; flex-direction:column; justify-content:space-between; animation:fadeIn .25s }
+  .card:hover { transform:translateY(-3px); border-color:var(--accent); background:#3e4c63 }
+  .card.ending-card { border-color:var(--safe); background:#14532d44 }
+  .card-header { display:flex; justify-content:space-between; align-items:center; gap:6px; font-weight:bold; margin-bottom:6px; font-size:.95rem }
+  .card-tag { font-size:.72rem; background:#0f172a; padding:2px 6px; border-radius:4px; color:var(--accent) }
+  .card-tag.end { background:var(--safe); color:#052e16 }
+  .card-body { font-size:.85rem; color:#cbd5e1; line-height:1.45 }
+  .empty-hint { grid-column:1/-1; text-align:center; padding:24px; background:var(--panel); border-radius:10px; color:var(--muted); border:1px dashed #475569 }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px) } to { opacity:1; transform:none } }
+  .action-row { display:flex; gap:10px; margin-top:12px }
+  .next-btn,.restart-btn { flex:1; padding:14px; border:none; border-radius:8px; font-weight:bold; font-size:1rem; cursor:pointer }
+  .next-btn { background:var(--safe); color:#052e16 }.restart-btn { background:var(--accent); color:#0f172a }
+  .promo-footer { margin-top:28px; padding:20px 18px; background:linear-gradient(135deg,#1e293b,#0f172a); border:1px solid #334155; border-top:3px solid var(--accent); border-radius:12px; text-align:center }
+  .promo-title { font-weight:bold; color:#e0f2fe; margin-bottom:14px }
+  .promo-links { display:flex; justify-content:center; flex-wrap:wrap; gap:10px }
+  .promo-btn { display:inline-flex; padding:9px 16px; border-radius:8px; font-size:.88rem; font-weight:bold; text-decoration:none; color:#f8fafc; background:#334155; border:1px solid #475569 }
+  @media(max-width:680px){ .meters{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="title-wrap" style="flex-wrap:wrap"><h1>✈️ 王牌領隊危機公關模擬器</h1><span class="author-badge">🏅 領隊8期 Nick 出品</span><span class="badge-count" id="solvedBadge">已通關：0 / 40 題</span></div>
+  <div class="controls-bar">
+    <select id="catFilter" onchange="filterByCategory(this.value)"><option value="ALL">📂 全部分類 (40題)</option><option value="機場通關">🛫 機場通關與行李</option><option value="交通協調">🚌 交通司機與導遊</option><option value="飯店餐廳">🏨 飯店住宿與餐廳</option><option value="天災安全">🌪️ 天災暴動與突發</option><option value="證件失竊">🛂 護照失竊與遭搶</option><option value="人身重大">🚑 醫療猝逝與性平</option><option value="購物小費">💳 購物小費與拼團</option></select>
+    <select id="eventSelect" onchange="selectEvent(this.value)"></select>
+    <label class="hint-toggle-label"><input type="checkbox" id="showHintsToggle" onchange="toggleHints(this.checked)"><span>💡 顯示提示</span></label>
+  </div>
+</header>
+<div class="meters">
+  <div class="meter-box"><div class="meter-title"><span>💖 安心感</span><span id="val-calm">60</span></div><div class="bar-bg"><div class="bar-fill" id="bar-calm" style="width:60%;background:#22c55e"></div></div></div>
+  <div class="meter-box"><div class="meter-title"><span>🤝 全團信任</span><span id="val-trust">65</span></div><div class="bar-bg"><div class="bar-fill" id="bar-trust" style="width:65%;background:#38bdf8"></div></div></div>
+  <div class="meter-box"><div class="meter-title"><span>⚖️ 現場秩序</span><span id="val-order">70</span></div><div class="bar-bg"><div class="bar-fill" id="bar-order" style="width:70%;background:#a855f7"></div></div></div>
+  <div class="meter-box"><div class="meter-title"><span>⚠️ 事件風險</span><span id="val-risk">20</span></div><div class="bar-bg"><div class="bar-fill" id="bar-risk" style="width:20%;background:#ef4444"></div></div></div>
+</div>
+<div class="flags-bar" id="flagsBar"><span style="color:#94a3b8">📌 已完成處置：</span></div>
+<div class="scenario-panel"><div class="scenario-title" id="eventTitle">載入中...</div><div class="scenario-desc" id="eventDesc"></div><div class="phase-box"><span class="phase-text" id="phaseHint">載入中...</span><span class="progress-status" id="progressStatus">尚有核心步驟未完成</span></div></div>
+<div id="endingArea"></div><div class="log-box" id="logBox">交涉紀錄將顯示於此...</div>
+<div class="tabs"><button class="tab-btn active" onclick="switchTab('A')" id="tab-A"></button><button class="tab-btn" onclick="switchTab('B')" id="tab-B"></button><button class="tab-btn" onclick="switchTab('C')" id="tab-C"></button></div>
+<div class="cards-grid" id="cardsArea"></div><div class="action-row" id="actionFooter"></div>
+<footer class="promo-footer"><div class="promo-title">🍶 如果喜歡請支持加入我的清酒粉絲頁</div><div class="promo-links"><a class="promo-btn" href="https://www.instagram.com/okyakusake" target="_blank" rel="noopener">📸 Instagram：@okyakusake</a><a class="promo-btn" href="https://www.facebook.com/OkyakuSake" target="_blank" rel="noopener">📘 Facebook：OkyakuSake</a><a class="promo-btn" href="https://line.me/R/ti/p/@okyakusake" target="_blank" rel="noopener">💬 LINE：@okyakusake</a><a class="promo-btn" href="https://okyakusake.com/" target="_blank" rel="noopener">🌐 官網：okyakusake.com</a></div></footer>
+</div>
+<script>
+const ALL_EVENTS = ${JSON.stringify({})};
+</script>
+</body>
+</html>
